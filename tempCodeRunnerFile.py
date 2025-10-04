@@ -6,6 +6,19 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
+# --- NLTK Setup: Run these lines once to download necessary data ---
+try:
+    stopwords.words('english')
+except LookupError:
+    print("Downloading NLTK stopwords...")
+    nltk.download('stopwords')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    print("Downloading NLTK punkt tokenizer...")
+    nltk.download('punkt')
+# --- End of Setup ---
+
 def process_text(text):
     """Applies the full NLP pipeline to a single string of text."""
     # 1. Tokenize: Split text into a list of words.
