@@ -1,0 +1,71 @@
+/* --- Global Style Enhancements --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* A light grey background from Bootstrap variables */
+}
+
+/* --- Navbar Customization --- */
+.navbar-brand {
+    color: #212529; /* Dark text color */
+}
+
+.nav-link {
+    font-weight: 600;
+    color: #0e406b; /* Muted text color */
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #0d6efd; /* Bootstrap primary blue on hover */
+}
+
+/* --- Search Form Enhancements --- */
+.search-form .input-group {
+    border-radius: 0.75rem; /* More pronounced rounded corners */
+}
+
+.search-form .form-control {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Remove the default focus glow to replace it with a custom one */
+.search-form .form-control:focus {
+    box-shadow: none;
+    border-color: #dee2e6; /* Keep border color consistent on focus */
+}
+
+/* Add a subtle glow to the entire input group when the input is focused */
+.search-form .form-control:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+}
+
+/* --- Custom Button Style --- */
+.custom-btn-gradient {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(45deg, #0d6efd, #0056b3);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-top-right-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.custom-btn-gradient:hover {
+    transform: translateY(-3px); /* Lifts the button slightly on hover */
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3); /* Adds a deeper shadow on hover */
+}
+
+.custom-btn-gradient:active {
+    transform: translateY(-1px);
+}
+.navbar-brand fw-bold{
+    font-size: 2.5rem;
+}
