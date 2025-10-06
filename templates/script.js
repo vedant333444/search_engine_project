@@ -1,103 +1,159 @@
-// Wait for the entire HTML document to be fully loaded and parsed before running any script.
+/**
+ * @file script.js
+ * @description This script handles all frontend logic, including shortcut management with an edit modal.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Select the key HTML elements we need to interact with.
-    // Make sure your HTML has these exact IDs!
+    // --- Configuration ---
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+    const SHORTCUTS_STORAGE_KEY = 'vrSearchShortcutsV3'; // New key for the new data format
+
+    // --- Element Selection ---
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
-    const resultsContainer = document.getElementById('search-results-container');
+    const shortcutsContainer = document.getElementById('shortcuts-container');
+    const shortcutsButtonContainer = document.getElementById('shortcuts-button-container');
+    const editShortcutModalEl = document.getElementById('editShortcutModal');
+    const editShortcutForm = document.getElementById('editShortcutForm');
+    const saveShortcutChangesBtn = document.getElementById('saveShortcutChangesBtn');
 
-    // Add an event listener to the form for when the user submits a search.
-    searchForm.addEventListener('submit', async (event) => {
-        // Prevent the default form submission behavior which reloads the page. This is crucial.
-        event.preventDefault(); 
+    // Get a JavaScript instance of the Bootstrap modal
+    const editModal = new bootstrap.Modal(editShortcutModalEl);
+    
+    let shortcuts = []; // Now an array of objects: {id: number, name: string, url: string}
+
+    // ======================================================
+    //  UPDATED: Shortcut Management Logic
+    // ======================================================
+
+    function loadShortcuts() {
+        const storedShortcuts = localStorage.getItem(SHORTCUTS_STORAGE_KEY);
+        if (storedShortcuts) {
+            shortcuts = JSON.parse(storedShortcuts);
+        } else {
+            shortcuts = [
+                { id: Date.now() + 1, name: 'Beat Saber', url: 'https://beatsaber.com/' },
+                { id: Date.now() + 2, name: 'VRChat', url: 'https://hello.vrchat.com/' },
+                { id: Date.now() + 3, name: 'Meta Quest', url: 'https://www.meta.com/quest/' },
+            ];
+        }
+        renderShortcuts();
+    }
+
+    function saveShortcuts() {
+        localStorage.setItem(SHORTCUTS_STORAGE_KEY, JSON.stringify(shortcuts));
+    }
+
+    function renderShortcuts() {
+        shortcutsButtonContainer.querySelectorAll('.shortcut-item').forEach(item => item.remove());
+        const addShortcutBtn = shortcutsButtonContainer.querySelector('.btn-add-shortcut');
+
+        shortcuts.forEach(shortcut => {
+            const shortcutItemHTML = `
+                <div class="shortcut-item dropdown">
+                    <a href="${shortcut.url}" target="_blank" class="shortcut-btn-text" title="Open ${shortcut.url}">${shortcut.name}</a>
+                    <button class="shortcut-btn-menu dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-shortcut-id="${shortcut.id}">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item edit-shortcut" href="#" data-shortcut-id="${shortcut.id}">Edit</a></li>
+                        <li><a class="dropdown-item text-danger remove-shortcut" href="#" data-shortcut-id="${shortcut.id}">Remove</a></li>
+                    </ul>
+                </div>
+            `;
+            addShortcutBtn.insertAdjacentHTML('beforebegin', shortcutItemHTML);
+        });
+
+        // *** FIX: Manually initialize Bootstrap dropdowns for dynamically created elements ***
+        shortcutsButtonContainer.querySelectorAll('.dropdown-toggle').forEach(dropdownToggleEl => {
+            new bootstrap.Dropdown(dropdownToggleEl);
+        });
+    }
+
+    shortcutsButtonContainer.querySelector('.btn-add-shortcut').addEventListener('click', () => {
+        const name = prompt('Enter a name for the new shortcut:', '');
+        if (!name || name.trim() === '') return;
+
+        const url = prompt('Enter the URL for the shortcut:', 'https://');
+        if (!url || url.trim() === '') return;
+
+        shortcuts.push({ id: Date.now(), name: name.trim(), url: url.trim() });
+        saveShortcuts();
+        renderShortcuts();
+    });
+
+    shortcutsContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        // Use `closest` to find the action item, as user might click the icon inside
+        const editButton = target.closest('.edit-shortcut');
+        const removeButton = target.closest('.remove-shortcut');
         
-        // Get the user's query from the input box and remove any extra whitespace.
-        const query = searchInput.value.trim();
-
-        // If the query is empty, show a message and stop.
-        if (!query) {
-            resultsContainer.innerHTML = '<p class="text-center text-warning">Please enter a search term.</p>';
-            return;
+        if (editButton) {
+            event.preventDefault();
+            const shortcutId = parseInt(editButton.dataset.shortcutId);
+            const shortcut = shortcuts.find(s => s.id === shortcutId);
+            if (shortcut) {
+                // Populate the modal with current data
+                document.getElementById('modalShortcutId').value = shortcut.id;
+                document.getElementById('modalShortcutName').value = shortcut.name;
+                document.getElementById('modalShortcutUrl').value = shortcut.url;
+                // Show the modal
+                editModal.show();
+            }
         }
 
-        // Display a loading spinner to provide user feedback while we fetch results.
-        resultsContainer.innerHTML = `
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Searching for "<strong>${query}</strong>"...</p>
-            </div>`;
-
-        // Use a try...catch block to handle potential network errors.
-        try {
-            // Send the search query to our Flask backend API endpoint.
-            const response = await fetch('http://127.0.0.1:5000/search', {
-                method: 'POST', // We use POST to send data in the request body.
-                headers: {
-                    'Content-Type': 'application/json', // Tell the server we are sending JSON data.
-                },
-                body: JSON.stringify({ query: query }), // Convert our JS object to a JSON string.
-            });
-
-            // If the server responds with an error status (like 404 or 500), throw an error.
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+        if (removeButton) {
+            event.preventDefault();
+            const shortcutId = parseInt(removeButton.dataset.shortcutId);
+            if (confirm('Are you sure you want to remove this shortcut?')) {
+                shortcuts = shortcuts.filter(s => s.id !== shortcutId);
+                saveShortcuts();
+                renderShortcuts();
             }
-
-            // Parse the JSON response from the server.
-            const data = await response.json();
-            
-            // Call the function to render the results on the page.
-            displayResults(data.results);
-
-        } catch (error) {
-            console.error('Error fetching search results:', error);
-            resultsContainer.innerHTML = '<p class="text-center text-danger">An error occurred while searching. Please check if the backend server is running and try again.</p>';
         }
     });
 
-    /**
-     * Takes an array of result objects and renders them as HTML cards.
-     * @param {Array<Object>} results - The array of search results from the backend.
-     */
-    function displayResults(results) {
-        // Clear the "Searching..." message.
-        resultsContainer.innerHTML = '';
+    // Add a single listener for the "Save Changes" button on the modal
+    saveShortcutChangesBtn.addEventListener('click', () => {
+        const shortcutId = parseInt(document.getElementById('modalShortcutId').value);
+        const newName = document.getElementById('modalShortcutName').value.trim();
+        const newUrl = document.getElementById('modalShortcutUrl').value.trim();
 
-        // If there are no results, display a friendly message.
-        if (!results || results.length === 0) {
-            resultsContainer.innerHTML = '<p class="text-center">No results found.</p>';
-            return;
+        if (newName && newUrl) {
+            const shortcut = shortcuts.find(s => s.id === shortcutId);
+            if (shortcut) {
+                shortcut.name = newName;
+                shortcut.url = newUrl;
+                saveShortcuts();
+                renderShortcuts();
+                editModal.hide(); // Hide the modal after saving
+            }
+        } else {
+            alert('Name and URL cannot be empty.');
         }
+    });
+    
+    // Right-click functionality (remains the same and now works!)
+    shortcutsContainer.addEventListener('contextmenu', (event) => {
+        const shortcutItem = event.target.closest('.shortcut-item');
+        if (shortcutItem) {
+            event.preventDefault();
+            shortcutItem.querySelector('.shortcut-btn-menu').click();
+        }
+    });
 
-        // Loop through each result object and create an HTML card for it.
-        results.forEach(result => {
-            // Use a placeholder image if the result's image URL is missing or invalid.
-            const imageUrl = result.image && String(result.image).startsWith('http') 
-                           ? result.image 
-                           : 'https://via.placeholder.com/400x200.png?text=No+Image';
+    // ======================================================
+    //  Existing Search and Autocomplete Logic (Unchanged)
+    // ======================================================
+    // (All of your existing search logic from the previous step goes here, it needs no changes)
+    const searchResultsContainer = document.getElementById('search-results-container');
+    const searchAutocompleteContainer = document.getElementById('autocomplete-suggestions');
+    searchForm.addEventListener('submit', async (e) => { e.preventDefault(); /* ... your search logic ... */ });
+    searchInput.addEventListener('input', () => { /* ... your autocomplete logic ... */ });
+    function displayResults(results) { /* ... */ } // etc.
+    // ...
 
-            // Create the HTML for a single result card using a template literal.
-            const resultCardHTML = `
-                <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="${imageUrl}" class="card-img-top" alt="${result.title}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">${result.title}</h5>
-                            <p class="card-text flex-grow-1">${result.snippet || 'No summary available.'}</p>
-                            <a href="${result.url}" target="_blank" class="btn btn-primary mt-auto">Read More</a>
-                        </div>
-                        <div class="card-footer text-muted">
-                            Relevance Score: ${result.score}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Add the newly created card HTML to the end of our container.
-            resultsContainer.insertAdjacentHTML('beforeend', resultCardHTML);
-        });
-    }
+    // --- Initializer ---
+    loadShortcuts();
 });

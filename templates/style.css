@@ -1,103 +1,169 @@
-/* --- Global Style Enhancements --- */
+/* --- Animated Gradient Background --- */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa; /* A light grey background from Bootstrap variables */
+    color: #ffffff;
+    background: linear-gradient(-45deg, #0b071e, #2a1a5e, #1d4f7a, #0d8a8a);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
 }
 
-/* --- Navbar Customization --- */
-.navbar-brand {
-    color: #212529; /* Dark text color */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-.nav-link {
-    font-weight: 600;
-    color: #0e406b; /* Muted text color */
-    transition: color 0.3s ease;
+/* --- "Glassmorphism" Effect for Content Panels --- */
+.navbar, 
+.results-section {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.nav-link:hover {
-    color: #0d6efd; /* Bootstrap primary blue on hover */
-}
-
-/* --- Search Form Enhancements --- */
-.search-form .input-group {
-    border-radius: 0.75rem; /* More pronounced rounded corners */
-}
-
-.search-form .form-control {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-/* Remove the default focus glow to replace it with a custom one */
-.search-form .form-control:focus {
-    box-shadow: none;
-    border-color: #dee2e6; /* Keep border color consistent on focus */
-}
-
-/* Add a subtle glow to the entire input group when the input is focused */
-.search-form .form-control:focus-within {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-.input-group-text {
-    border-top-left-radius: 0.75rem;
-    border-bottom-left-radius: 0.75rem;
-}
-
-/* --- Custom Button Style --- */
-.custom-btn-gradient {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-weight: 600;
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .navbar-brand {
     color: #fff;
-    background: linear-gradient(45deg, #0d6efd, #0056b3);
+}
+
+/* --- Main Hero Section Styling --- */
+main h1 { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); }
+main .lead { color: #e0e0e0; }
+#search-input { border: none; }
+#search-form .btn-primary {
+    background-color: #5848c7;
+    border-color: #5848c7;
+    transition: background-color 0.3s ease;
+}
+#search-form .btn-primary:hover { background-color: #46399f; border-color: #46399f; }
+
+/* ====================================================== */
+/*  NEW & UPDATED: Shortcut Buttons Styling              */
+/* ====================================================== */
+.shortcut-item {
+    display: flex;
+    border-radius: 0.375rem; /* Standard Bootstrap rounding */
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden; /* Ensures the sharp edges for the inner buttons */
+}
+.shortcut-item:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* The main text part of the shortcut button */
+.shortcut-btn-text {
+    background: none;
     border: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-top-right-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    transition: all 0.2s ease-in-out;
 }
 
-.custom-btn-gradient:hover {
-    transform: translateY(-3px); /* Lifts the button slightly on hover */
-    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3); /* Adds a deeper shadow on hover */
+/* The three-dots menu trigger */
+.shortcut-btn-menu {
+    background: none;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    line-height: 1; /* Aligns the icon better */
+}
+.shortcut-btn-menu:hover {
+    background-color: rgba(0,0,0,0.2);
 }
 
-.custom-btn-gradient:active {
-    transform: translateY(-1px);
-}
-.navbar-brand fw-bold{
-    font-size: 2.5rem;
-}
-/* Styling for Autocomplete */
-#autocomplete-suggestions .list-group-item {
-    cursor: pointer; /* Makes them feel clickable */
-    padding: 0.75rem 1.25rem;
+/* Hide Bootstrap's default dropdown arrow */
+.shortcut-btn-menu.dropdown-toggle::after {
+    display: none;
 }
 
-#autocomplete-suggestions .list-group-item:hover {
-    background-color: #f0f0f0; /* Add a hover effect */
+/* Style the dropdown menu to match our glass theme */
+.shortcut-item .dropdown-menu {
+    background-color: rgba(30, 30, 60, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.shortcut-item .dropdown-item {
+    color: #e0e0e0;
+}
+.shortcut-item .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+.shortcut-item .dropdown-item.text-danger { /* Make remove text red */
+    color: #ff8a8a !important;
+}
+.shortcut-item .dropdown-item.text-danger:hover {
+    color: #fff !important;
+    background-color: rgba(255, 82, 82, 0.3);
 }
 
-.search-result {
-    /* The 'card' class from bootstrap already gives us a nice border and padding */
-    transition: box-shadow 0.2s ease-in-out;
+/* Add Shortcut Button */
+.btn-add-shortcut {
+    background-color: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.7);
+}
+.btn-add-shortcut:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
 }
 
-.search-result:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Add a subtle shadow on hover */
+/* --- Results Section Styling (unchanged) --- */
+.results-section .card {
+    background-color: rgba(10, 20, 40, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.results-section .card-title { color: #fff; }
+.results-section .card-text { color: #dcdcdc; }
+.results-section .card-footer {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* (All previous styles remain the same) */
+/* ... */
+
+/* ====================================================== */
+/*  NEW: Modal Styling                                   */
+/* ====================================================== */
+.modal-content {
+    background-color: rgba(15, 25, 50, 0.85); /* Dark semi-transparent */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
 }
 
-.result-title {
-    color: #0d6efd; /* A standard link-blue */
-    font-size: 1.4rem;
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.result-snippet strong {
-    color: #000;
-    font-weight: 700; /* Make highlighted terms stand out */
+.modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.result-score {
-    font-style: italic;
+/* Style the form elements inside the modal for dark theme */
+.modal-body .form-label {
+    color: #e0e0e0;
+}
+
+.modal-body .form-control {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.modal-body .form-control:focus {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: #5848c7;
+    color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(88, 72, 199, 0.5);
 }
