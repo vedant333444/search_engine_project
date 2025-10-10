@@ -5,6 +5,8 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+import pickle 
+
 
 def process_text(text):
     """Applies the full NLP pipeline to a single string of text."""
@@ -30,9 +32,11 @@ def process_text(text):
 def main():
     """Main function to run the data processing pipeline."""
     raw_data_path = 'data/raw'
-    processed_data_path = 'data/processed/processed_data.json'
+    processed_data_file = 'data/processed/processed_data.json'
+    raw_content_file = 'data/processed/raw_content_dict.pkl' # <--- NEW FILE PATH
     
     processed_data = {} # Dictionary to store {doc_id: [processed_words]}
+    raw_content_dict = {} # <--- NEW: Dictionary to store {doc_id: raw_text}
 
     print("Starting data processing...")
     # Loop through each file in the raw data directory
@@ -41,15 +45,23 @@ def main():
             file_path = os.path.join(raw_data_path, filename)
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
+                
+                # Store raw content
+                raw_content_dict[filename] = content # <--- STORE RAW CONTENT
+                
                 processed_words = process_text(content)
                 processed_data[filename] = processed_words
     
-    # Save the processed data to a single JSON file
-    with open(processed_data_path, 'w', encoding='utf-8') as f:
+    # Save the processed words data
+    with open(processed_data_file, 'w', encoding='utf-8') as f:
         json.dump(processed_data, f, indent=4)
+    
+    # Save the raw content dictionary <--- NEW SAVE STEP
+    with open(raw_content_file, 'wb') as f: # Use 'wb' for pickle
+        pickle.dump(raw_content_dict, f)
         
     print(f"Processing complete. {len(processed_data)} documents processed.")
-    print(f"Clean data saved to: {processed_data_path}")
-
+    print(f"Clean data saved to: {processed_data_file}")
+    print(f"Raw content saved to: {raw_content_file}") # <--- NEW PRINT
 if __name__ == '__main__':
     main()
