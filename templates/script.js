@@ -23,20 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let shortcuts = []; // Now an array of objects: {id: number, name: string, url: string}
 
-    // ======================================================
-    //  UPDATED: Shortcut Management Logic
-    // ======================================================
-
+    // --- Shortcut Management Functions ---
     function loadShortcuts() {
         const storedShortcuts = localStorage.getItem(SHORTCUTS_STORAGE_KEY);
         if (storedShortcuts) {
             shortcuts = JSON.parse(storedShortcuts);
         } else {
+            // Default shortcuts if none are stored
             shortcuts = [
-                { id: Date.now() + 1, name: 'Beat Saber', url: 'https://beatsaber.com/' },
-                { id: Date.now() + 2, name: 'VRChat', url: 'https://hello.vrchat.com/' },
-                { id: Date.now() + 3, name: 'Meta Quest', url: 'https://www.meta.com/quest/' },
+                { id: 1, name: 'Google', url: 'https://www.google.com' },
+                { id: 2, name: 'YouTube', url: 'https://www.youtube.com' },
+                { id: 3, name: 'Wikipedia', url: 'https://www.wikipedia.org' }
             ];
+            saveShortcuts();
         }
         renderShortcuts();
     }
