@@ -122,11 +122,11 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open:
+## 🌐 Live Demo
 
-```
-http://127.0.0.1:5000
-```
+**Try the application here:**
+
+https://vr-search-engine.onrender.com
 
 ---
 
