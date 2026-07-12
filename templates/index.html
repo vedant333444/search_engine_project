@@ -4,27 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced VR Search | Focus Corrected</title>
-    <!-- (Stylesheets remain the same) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
             <div class="container">
-                <!-- UPDATED: Link back to the main search page -->
-                <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-headset-vr me-2"></i>VR Search</a>
+                <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
+                    <i class="bi bi-headset-vr me-2"></i>VR Search
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <!-- UPDATED: Links to the new pages -->
-                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,7 +38,7 @@
                     <h1 class="display-4 fw-bold mb-3">Discover Your Next Virtual World</h1>
                     <p class="lead mb-5">Search for the latest games, immersive experiences, and cutting-edge hardware.</p>
                     <form id="search-form" action="#" method="get" class="search-form mb-4">
-                        <div class="input-group input-group-lg shadow-lg">
+                        <div class="search-form mb-4">
                             <input id="search-input" type="search" class="form-control" placeholder="Enter your search..." aria-label="Search" autocomplete="off" required>
                             <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
                         </div>
@@ -88,6 +87,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </body>
 </html>
