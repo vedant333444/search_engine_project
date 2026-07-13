@@ -14,6 +14,13 @@ Advanced VR Search Engine is a web-based information retrieval system developed 
 
 ---
 
+## 🌐 Live Demo
+
+**Try the application here:**
+
+https://vr-search-engine.onrender.com
+
+---
 ## ✨ Features
 
 - Document preprocessing using NLTK
@@ -121,14 +128,6 @@ pip install -r requirements.txt
 
 python app.py
 ```
-
-## 🌐 Live Demo
-
-**Try the application here:**
-
-https://vr-search-engine.onrender.com
-
----
 
 ## 📁 Project Structure
 
